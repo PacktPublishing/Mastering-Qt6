@@ -346,7 +346,7 @@ void budget::setupGroupModel()
 
     QObject::connect(ui.date_from, SIGNAL(dateChanged(QDate)), this, SLOT(dateChanged(QDate)));
     QObject::connect(ui.date_to, SIGNAL(dateChanged(QDate)), this, SLOT(dateChanged(QDate)));
-    QObject::connect(ui.find, SIGNAL(textChanged(const QString&)), this, SLOT(findTextChanged(const QString&)));
+    QObject::connect(ui.findSearch, SIGNAL(textActivated(const QString&)), this, SLOT(findTextChanged(const QString&)));
 
     updateModels();
 }

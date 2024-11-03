@@ -108,7 +108,11 @@
        </layout>
       </item>
       <item>
-       <widget class="QLineEdit" name="find"/>
+       <widget class="QComboBox" name="findSearch">
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QTableView" name="table_trans"/>
