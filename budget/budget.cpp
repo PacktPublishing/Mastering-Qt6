@@ -25,6 +25,7 @@ budget::budget(QWidget *parent)
 
     setupGroupModel();
     updateModels();
+    setupViewEdit();
 
     QObject::connect(&timer, SIGNAL(timeout()), this, SLOT(checkTimer()));
     timer.setSingleShot(false);
@@ -339,16 +340,24 @@ void budget::on_add_trans_clicked()
 void budget::setupGroupModel()
 {
     budgetmodel = new BudgetModel(this);
+    budgetmodel->setQuery(_query);
     budgetsortfiltermodel = new BudgetSortFilterModel(this);
     budgetsortfiltermodel->setSourceModel(budgetmodel);
     ui.table_trans->setModel(budgetsortfiltermodel);
-    budgetmodel->updateFromDatabase(_query);
+    budgetmodel->updateFromDatabase();
 
     QObject::connect(ui.date_from, SIGNAL(dateChanged(QDate)), this, SLOT(dateChanged(QDate)));
     QObject::connect(ui.date_to, SIGNAL(dateChanged(QDate)), this, SLOT(dateChanged(QDate)));
     QObject::connect(ui.findSearch, SIGNAL(textActivated(const QString&)), this, SLOT(findTextChanged(const QString&)));
 
     updateModels();
+}
+
+void budget::setupViewEdit()
+{
+    ui.table_trans->setItemDelegate(new BudgetDelegate);
+    ui.table_trans->setEditTriggers(QAbstractItemView::DoubleClicked
+        | QAbstractItemView::SelectedClicked);
 }
 
 void budget::dateChanged(QDate date)
@@ -367,7 +376,7 @@ void budget::updateModels()
     budgetsortfiltermodel->setDateFromTo(ui.date_from->date(), ui.date_to->date());
     budgetsortfiltermodel->invalidate();
     groupmodel->updateFromDatabase(_query);
-    budgetmodel->updateFromDatabase(_query);
+    budgetmodel->updateFromDatabase();
 
     qreal income  = 0;
     qreal expense = 0;

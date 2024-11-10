@@ -12,17 +12,21 @@
 #include <QSqlError>
 #include <QSortFilterProxyModel>
 #include <QDate>
+#include <QStyledItemDelegate>
+#include <QSpinBox>
 
 class BudgetModel : public QAbstractTableModel
 {
 	Q_OBJECT
 public:
-	BudgetModel(QObject* parent = nullptr) : QAbstractTableModel(parent)
+	BudgetModel(QObject* parent = nullptr) : QAbstractTableModel(parent), query(nullptr)
 	{}
 	~BudgetModel() 
 	{
 		clear();
 	}
+
+	void setQuery(QSqlQuery* q) { query = q; }
 
 	int rowCount(const QModelIndex& parent = QModelIndex()) const
 	{
@@ -78,7 +82,7 @@ public:
 		return QVariant();
 	}
 
-	void updateFromDatabase(QSqlQuery *query)
+	void updateFromDatabase()
 	{
 		if (!query) return;
 		beginResetModel();
@@ -106,6 +110,43 @@ public:
 		endResetModel();
 	}
 
+	Qt::ItemFlags flags(const QModelIndex& index) const override
+	{
+		if (!index.isValid())
+			return Qt::ItemIsEnabled;
+		if (index.column()==3)
+			return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+		return QAbstractItemModel::flags(index);
+	}
+	
+	bool setData(const QModelIndex& index, const QVariant& value,
+		int role = Qt::EditRole) override
+	{
+		if (index.isValid() && role == Qt::EditRole) 
+		{
+			int c = index.column();
+			if (c == 3)
+			{
+				int r = index.row();
+				ExpenseInfo* e = entries.at(r);
+				e->amount = value.toDouble();
+				emit dataChanged(index, index, { role });
+
+				// updating SQL
+				QString cmd = "UPDATE expenses SET amount=:amount WHERE uid=:uid";
+				if (query && query->prepare(cmd))
+				{
+					query->bindValue(":amount", e->amount);
+					query->bindValue(":uid", e->uid);
+					if (!query->exec())
+						qDebug() << "Cannot fetct entries from DB, since: " << query->lastError().text();
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+
 private:
 	void clear()
 	{
@@ -115,6 +156,7 @@ private:
 	}
 
 private:
+	QSqlQuery* query;
 	QList<ExpenseInfo*> entries;
 };
 
@@ -162,6 +204,47 @@ private:
 	QDate date_from;
 	QDate date_to;
 	QString findtext;
+};
+
+
+class BudgetDelegate : public QStyledItemDelegate
+{
+	Q_OBJECT
+
+public:
+	BudgetDelegate(QObject* parent = nullptr) {}
+
+	QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option,
+		const QModelIndex& index) const override
+	{
+		QSpinBox* editor = new QSpinBox(parent);
+		editor->setFrame(false);
+		editor->setMinimum(-100000);
+		editor->setMaximum(100000);
+		return editor;
+	}
+
+	void setEditorData(QWidget* editor, const QModelIndex& index) const override
+	{
+		int value = index.data(Qt::EditRole).toInt();
+		QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
+		spinBox->setValue(value);
+	}
+	
+	void setModelData(QWidget* editor, QAbstractItemModel* model,
+		const QModelIndex& index) const override
+	{
+		QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
+		spinBox->interpretText();
+		int value = spinBox->value();
+		model->setData(index, value, Qt::EditRole);
+	}
+
+	void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option,
+		const QModelIndex& index) const override
+	{
+		editor->setGeometry(option.rect);
+	}
 };
 
 

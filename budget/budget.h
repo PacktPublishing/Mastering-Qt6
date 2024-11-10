@@ -56,6 +56,7 @@ public slots:
     void updateModels();
 
     void checkTimer();
+    void setupViewEdit();
 
 private:
     Ui::Budget ui;
