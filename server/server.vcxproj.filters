@@ -29,9 +29,27 @@
     <ClCompile Include="server.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="statistics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fileconverter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="converter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="server.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="statistics.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="fileconverter.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="converter.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
