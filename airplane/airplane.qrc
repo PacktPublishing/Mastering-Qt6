@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/AirPlane">
+        <file>images/airplane.png</file>
+        <file>images/missile.png</file>
+        <file>images/ship.png</file>
+        <file>images/main_title.png</file>
+        <file>music/credit.wav</file>
+        <file>music/level1.wav</file>
+        <file>music/level2.wav</file>
+        <file>music/level3.wav</file>
+        <file>music/titlescreen.wav</file>
+        <file>images/0.png</file>
+        <file>images/1.png</file>
+        <file>images/2.png</file>
+        <file>images/3.png</file>
+        <file>images/4.png</file>
+        <file>images/5.png</file>
+        <file>images/6.png</file>
+        <file>images/7.png</file>
+        <file>images/8.png</file>
+        <file>images/9.png</file>
+        <file>images/player1.png</file>
+        <file>images/gameover.png</file>
+    </qresource>
+</RCC>
