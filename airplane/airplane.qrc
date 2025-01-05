@@ -24,7 +24,7 @@
         <file>config.json</file>
         <file>images/main_title_small.png</file>
     </qresource>
-    <qresource prefix="/AirPlan_rightLeft">
+    <qresource prefix="/AirPlane_rightLeft">
         <file alias=":/AirPlane/config.json">config_rightleft.json</file>
     </qresource>
 </RCC>
