@@ -59,4 +59,9 @@
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <QtTranslation Include="airplane_hu.ts">
+      <Filter>Translation Files</Filter>
+    </QtTranslation>
+  </ItemGroup>
 </Project>

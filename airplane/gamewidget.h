@@ -18,11 +18,13 @@
 
 enum ItemTypes
 {
-	GItem	   = QGraphicsItem::UserType + 10,
-	GAirPlane  = QGraphicsItem::UserType + 11,
-	GBullet    = QGraphicsItem::UserType + 12,
-	GRocket    = QGraphicsItem::UserType + 13,
-	GShip      = QGraphicsItem::UserType + 14
+	GItem			= QGraphicsItem::UserType + 10,
+	GAirPlane		= QGraphicsItem::UserType + 11,
+	GBullet			= QGraphicsItem::UserType + 12,
+	GRocket			= QGraphicsItem::UserType + 13,
+	GShip			= QGraphicsItem::UserType + 14,
+    GEnemyPlane		= QGraphicsItem::UserType + 15,
+    GEnemyRocket	= QGraphicsItem::UserType + 16
 };
 
 
@@ -88,7 +90,7 @@ public:
 	{
 		_px.load(":/AirPlane/images/missile.png");
 	}
-	int type() const override { return GRocket; }
+	virtual int type() const override { return GRocket; }
 };
 
 class GameShip : public GameItem
@@ -100,6 +102,20 @@ public:
 	}
 	virtual int type() const override { return GShip; }
 };
+
+class GameEnemyPlane : public GameItem
+{
+public:
+	GameEnemyPlane(qreal x, qreal y, qreal width, qreal height, QGraphicsItem* parent = nullptr) : GameItem(x, y, width, height, parent)
+	{
+		_px.load(":/AirPlane/images/airplane.png");
+		QTransform trans;
+        trans.rotate(180);
+		_px = _px.transformed(trans);
+	}
+	virtual int type() const override { return GEnemyPlane; }
+};
+
 
 
 
@@ -131,7 +147,6 @@ protected slots:
 
 protected:
 	void drawForeground(QPainter* painter, const QRectF& rect);
-	void resizeEvent(QResizeEvent* e) {}
 	void keyPressEvent(QKeyEvent* e);
 	void keyReleaseEvent(QKeyEvent* e);
 
@@ -173,7 +188,8 @@ public slots:
 protected:
 	void resizeEvent(QResizeEvent* e) 
 	{
-		view->setGeometry(0, 0, e->size().width(), e->size().height());
+		if (view)
+			view->setGeometry(0, 0, e->size().width(), e->size().height());
 	}
 
 

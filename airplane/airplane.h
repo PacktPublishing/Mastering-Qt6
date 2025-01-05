@@ -50,6 +50,7 @@ protected slots:
         player->setSource(QUrl("qrc:/AirPlane/music/titlescreen.wav"));
         player->setLoops(999);
         player->play();
+        ui.stackedWidget->show();
     }
 
 private:
